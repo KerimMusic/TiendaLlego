@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const pantallaPedido  = document.getElementById('pantalla-pedido');
   const pantallaCombo   = document.getElementById('pantalla-combo');
   const pantallaResumen = document.getElementById('pantalla-resumen');
+  const pantallaCalcetines = document.getElementById('pantalla-calcetines');
 
   // ============================================================
   // BOTÓN "CONSULTAR SI HAY PRODUCTO"
@@ -146,7 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ============================================================
   // NAVEGACIÓN DE PANELES (BLINDADA)
-  // - Si el panel tiene data-link con URL → abre esa URL
+  // - Si el panel tiene data-link="calcetines" → muestra pantalla calcetines
+  // - Si el panel tiene otra URL → abre esa URL
   // - Si data-link está vacío → abre la pantalla de pedido
   // ============================================================
   document.querySelectorAll('.panel.clickable').forEach(panel => {
@@ -156,13 +158,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const link = (panel.dataset.link || '').trim();
 
-      // Si el admin puso un enlace, lo respetamos (pero con noopener)
+      // Caso especial: Pantalla de Calcetines (Próximamente)
+      if (link === 'calcetines') {
+        pantallaInicio.style.display = 'none';
+        pantallaCalcetines.style.display = 'flex';
+        pantallaPedido.style.display = 'none';
+        pantallaCombo.style.display = 'none';
+        pantallaResumen.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Si el admin puso un enlace externo, lo respetamos
       if (link) {
         window.open(link, '_blank', 'noopener,noreferrer');
         return;
       }
 
-      // Comportamiento por defecto: abrir pantalla de pedido
+      // Comportamiento por defecto (Fresas): abrir pantalla de pedido
       pantallaInicio.style.display  = 'none';
       pantallaPedido.style.display  = 'flex';
       pantallaCombo.style.display   = 'none';
@@ -462,6 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pantallaResumen.style.display = 'none';
     pantallaPedido.style.display = 'none';
     pantallaCombo.style.display = 'none';
+    pantallaCalcetines.style.display = 'none'; // Ocultar también calcetines
     pantallaInicio.style.display = 'flex';
 
     // 🎲 Re-mezclar productos al volver al inicio
@@ -484,6 +498,7 @@ function volverAlInicio() {
   document.getElementById('pantalla-pedido').style.display = 'none';
   document.getElementById('pantalla-combo').style.display = 'none';
   document.getElementById('pantalla-resumen').style.display = 'none';
+  document.getElementById('pantalla-calcetines').style.display = 'none'; // Ocultar calcetines
   document.getElementById('pantalla-inicio').style.display = 'flex';
 }
 
