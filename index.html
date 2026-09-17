@@ -30,11 +30,7 @@
 <main class="galeria" id="pantalla-inicio">
 
   <!-- ============ Header solo visible en la página de inicio ============ -->
-  <header class="header-inicio" id="header-inicio">
-    <div class="logo-koonol">
-      <span>Koonol</span>
-      <span>NAAT</span>
-    </div>
+  <header class="header-inicio">
     <div class="banner-producto">
       <span class="banner-titulo">PRODUCTO</span>
       <span class="banner-subtitulo">IRAPUATO GTO</span>
@@ -57,31 +53,7 @@
     <p>Fresas Con Chantilly</p>
   </div>
 
-  <!-- ============ Tarjeta 2: Calcetines ============ -->
-  <div class="panel clickable"
-       data-producto="Calcetines"
-       data-descripcion="Calcetines Koonol NAAT"
-       data-precio="Consultar precio"
-       data-promo=""
-       data-link="calcetines">
-    <div class="ilustracion">
-      <img src="https://www.dropbox.com/scl/fi/h83l4vk3brcmlq9pg0ok2/Calcetines.jpeg?rlkey=grpx0lvk3pr4jfdy0qjvx1x16&st=scqv07pw&raw=1"
-           alt="Calcetines" loading="lazy">
-      <button class="btn-overlay" type="button">CONSULTAR SI HAY PRODUCTO</button>
-    </div>
-    <p>Calcetines</p>
-  </div>
-
 </main>
-
-<!-- ============ Pantalla de Calcetines (Próximamente) ============ -->
-<section id="pantalla-calcetines" style="display: none;">
-  <h1>Proximamente</h1>
-  <button class="btn-volver btn-volver-absoluto" onclick="volverAlInicio()">← Volver</button>
-  <div class="proximamente-container">
-    <img src="https://www.dropbox.com/scl/fi/wf1lk5s61x7rr2f0i9mb9/Trabajando.gif?rlkey=pso7i2iykwdiohl0b4pxilosv&st=m3t8zrdb&raw=1" alt="Próximamente" class="img-proximamente">
-  </div>
-</section>
 
 <!-- ============ Pantalla de armado del pedido ============ -->
 <section id="pantalla-pedido" style="display: none;">
@@ -150,7 +122,7 @@
           <svg viewBox="0 0 100 124"><use href="#icono-milk"/></svg>
         </div>
       </div>
-      <button class="btn-desplegable" data-caja="1">
+      <button class="btn-desplegable" data-caja="1" type="button">
         <span class="btn-desplegable-texto">Elige tus ingredientes 🍓</span>
         <span class="flecha">▼</span>
       </button>
@@ -169,7 +141,7 @@
           <svg viewBox="0 0 100 124"><use href="#icono-milk"/></svg>
         </div>
       </div>
-      <button class="btn-desplegable" data-caja="2">
+      <button class="btn-desplegable" data-caja="2" type="button">
         <span class="btn-desplegable-texto">Elige tus ingredientes 🍓</span>
         <span class="flecha">▼</span>
       </button>
@@ -188,7 +160,7 @@
           <svg viewBox="0 0 100 124"><use href="#icono-milk"/></svg>
         </div>
       </div>
-      <button class="btn-desplegable" data-caja="3">
+      <button class="btn-desplegable" data-caja="3" type="button">
         <span class="btn-desplegable-texto">Elige tus ingredientes 🍓</span>
         <span class="flecha">▼</span>
       </button>
@@ -212,7 +184,7 @@
 <section id="pantalla-resumen" style="display: none;">
   <button class="btn-volver" onclick="volverAlPedido()">← Volver</button>
 
-  <h2 class="titulo-resumen">“Tus Fresas están listas”</h2>
+  <h2 class="titulo-resumen">"Tus Fresas están listas"</h2>
 
   <input id="input-nombre" class="input-nombre" type="text" placeholder="Nombre:" autocomplete="name">
 
