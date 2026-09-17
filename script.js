@@ -1,5 +1,12 @@
 let origenPedido = 'simple';
 
+/* ============ Datos del pedido para WhatsApp ============ */
+let resumenCajaTexto = '1 caja de Fresas con Chantilly';
+let resumenIngredientesTexto = 'Ninguno';
+
+/* Números de WhatsApp (se elige uno al azar en cada pedido) */
+const NUMEROS_WHATSAPP = ['524621824592', '524626022906'];
+
 document.addEventListener('DOMContentLoaded', () => {
   // Animación de entrada para los paneles de la galería
   const panelesData = [
@@ -73,12 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnVerPedido) {
     btnVerPedido.addEventListener('click', () => {
       const resumenIngredientes = document.getElementById('resumen-ingredientes');
-      if (ingredientesSeleccionados.length === 0) {
-        resumenIngredientes.textContent = 'Ninguno';
-      } else {
-        resumenIngredientes.textContent = ingredientesSeleccionados.join(', ');
-      }
-      document.getElementById('resumen-caja').textContent = '1 caja de Fresas con Chantilly';
+
+      resumenCajaTexto = '1 caja de Fresas con Chantilly';
+      resumenIngredientesTexto = ingredientesSeleccionados.length
+        ? ingredientesSeleccionados.join(', ')
+        : 'Ninguno';
+
+      resumenIngredientes.textContent = resumenIngredientesTexto;
+      document.getElementById('resumen-caja').textContent = resumenCajaTexto;
+
       origenPedido = 'simple';
       pantallaPedido.style.display = 'none';
       pantallaResumen.style.display = 'flex';
@@ -121,16 +131,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnVerPedidoCombo = document.getElementById('btn-ver-pedido-combo');
   if (btnVerPedidoCombo) {
     btnVerPedidoCombo.addEventListener('click', () => {
-      let resumenCaja = '3 cajas de Fresas con Chantilly - Combo $100 MXN';
-      let lineasIngredientes = [];
+      resumenCajaTexto = '3 cajas de Fresas con Chantilly - Combo $100 MXN';
+      const lineasIngredientes = [];
       for (let i = 1; i <= 3; i++) {
         const item = document.querySelector(`.combo-item:nth-child(${i})`);
         const checks = item.querySelectorAll('input[type="checkbox"]:checked');
         const ings = Array.from(checks).map(c => c.value);
         lineasIngredientes.push(`Caja ${i}: ${ings.length ? ings.join(', ') : 'Ninguno'}`);
       }
-      document.getElementById('resumen-caja').textContent = resumenCaja;
+
+      resumenIngredientesTexto = lineasIngredientes.join('\n');
+
+      document.getElementById('resumen-caja').textContent = resumenCajaTexto;
       document.getElementById('resumen-ingredientes').innerHTML = lineasIngredientes.join('<br>');
+
       origenPedido = 'combo';
       pantallaCombo.style.display = 'none';
       pantallaResumen.style.display = 'flex';
@@ -173,19 +187,15 @@ document.addEventListener('DOMContentLoaded', () => {
     inputDireccion.placeholder = 'No requiere dirección (Recoger)';
   }
 
-  // ---- Hacer pedido (Enviar a WhatsApp) ----
+  // ---- Hacer pedido (envío por WhatsApp) ----
   const btnHacerPedido = document.getElementById('btn-hacer-pedido');
   const msgError = document.getElementById('msg-error');
-
-  // Números de WhatsApp que recibirán el pedido
-  const NUMEROS_WHATSAPP = ['524621824592', '524626022906'];
 
   if (btnHacerPedido) {
     btnHacerPedido.addEventListener('click', () => {
       const nombre = document.getElementById('input-nombre').value.trim();
       const direccion = inputDireccion.value.trim();
 
-      // Validaciones
       if (!nombre) {
         msgError.textContent = 'Por favor ingresa tu nombre.';
         return;
@@ -197,34 +207,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
       msgError.textContent = '';
 
-      // Construir el mensaje
-      let cajaTexto, ingredientesTexto;
-      if (origenPedido === 'combo') {
-        cajaTexto = '3 cajas de Fresas con Chantilly - Combo $100 MXN';
-        ingredientesTexto = document.getElementById('resumen-ingredientes').innerHTML.replace(/<br\s*\/?>/gi, '\n');
-      } else {
-        cajaTexto = '1 caja de Fresas con Chantilly';
-        ingredientesTexto = ingredientesSeleccionados.length ? ingredientesSeleccionados.join(', ') : 'Ninguno';
-      }
+      // ---- Mensaje que se enviará por WhatsApp ----
+      const mensaje = [
+        '🍓 *NUEVO PEDIDO - Fresas con Chantilly* 🍓',
+        '',
+        `👤 *Nombre:* ${nombre}`,
+        `📦 *Pedido:* ${resumenCajaTexto}`,
+        '🍫 *Ingredientes:*',
+        resumenIngredientesTexto,
+        `💳 *Pago:* ${pagoSeleccionado}`,
+        `🛵 *Envío:* ${envioSeleccionado}${envioSeleccionado === 'Envio a domicilio' ? ' - ' + direccion : ''}`,
+        '',
+        '¡Gracias por tu pedido! ✨'
+      ].join('\n');
 
-      const mensaje = `¡Hola! Quiero hacer un pedido:
-*Nombre:* ${nombre}
-*Caja:* ${cajaTexto}
-*Ingredientes:*
-${ingredientesTexto}
-*Pago:* ${pagoSeleccionado}
-*Envío:* ${envioSeleccionado}${envioSeleccionado === 'Envio a domicilio' ? ' - ' + direccion : ''}`;
+      // ---- Elegir número al azar ----
+      const numeroElegido = NUMEROS_WHATSAPP[Math.floor(Math.random() * NUMEROS_WHATSAPP.length)];
+      const urlWhatsApp = `https://wa.me/${numeroElegido}?text=${encodeURIComponent(mensaje)}`;
 
-      const mensajeCodificado = encodeURIComponent(mensaje);
+      // Abrir WhatsApp
+      window.open(urlWhatsApp, '_blank');
 
-      // Abrir WhatsApp para cada número
-      NUMEROS_WHATSAPP.forEach((numero, index) => {
-        const url = `https://wa.me/${numero}?text=${mensajeCodificado}`;
-        window.open(url, `whatsapp-pedido-${index}`);
-      });
+      // ---- Modal de confirmación ----
+      const modal = document.getElementById('modal-confirmacion');
+      const detalle = document.getElementById('modal-detalle');
 
-      // Opcional: mostrar mensaje de confirmación
-      // alert('Pedido enviado a WhatsApp. Por favor presiona ENVIAR en cada chat.');
+      detalle.innerHTML = `
+        <strong>Nombre:</strong> ${nombre}<br>
+        <strong>Pedido:</strong> ${resumenCajaTexto}<br>
+        <strong>Ingredientes:</strong><br>${resumenIngredientesTexto.replace(/\n/g, '<br>')}<br>
+        <strong>Pago:</strong> ${pagoSeleccionado}<br>
+        <strong>Envío:</strong> ${envioSeleccionado}${envioSeleccionado === 'Envio a domicilio' ? ' - ' + direccion : ''}
+        <br><br>
+        <span style="color:#aaa;font-size:13px;">Se abrió WhatsApp para enviar tu pedido.</span><br>
+        <a href="${urlWhatsApp}" target="_blank" style="color:#ff2a2a;font-size:13px;">
+          ¿No se abrió? Toca aquí para enviarlo
+        </a>
+      `;
+
+      modal.style.display = 'flex';
     });
   }
 });
