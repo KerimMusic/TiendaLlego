@@ -1,3 +1,4 @@
+// script.js
 let origenPedido = 'simple';
 
 /* ============ Datos del pedido para WhatsApp ============ */
@@ -178,40 +179,106 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ---- Dropdowns del combo ----
-  document.querySelectorAll('.btn-desplegable').forEach(btn => {
+  // ============================================================
+  // COMBO DINÁMICO: piezas ilimitadas + precio automático
+  // Regla: cada grupo de 3 piezas = $100, piezas sueltas = $35
+  // ============================================================
+  let comboPiezas = 3;
+  const comboLista = document.querySelector('.combo-lista');
+  const btnMas = document.getElementById('btn-mas');
+
+  function calcularPrecioCombo(n) {
+    const grupos = Math.floor(n / 3);
+    const restantes = n % 3;
+    return grupos * 100 + restantes * 35;
+  }
+
+  function actualizarTotalCombo() {
+    const texto = document.getElementById('combo-total-texto');
+    if (!texto) return;
+    const precio = calcularPrecioCombo(comboPiezas);
+    texto.textContent = `${comboPiezas} ${comboPiezas === 1 ? 'pieza' : 'piezas'} · $${precio} MXN`;
+  }
+
+  function crearCajaCombo(numero) {
+    const div = document.createElement('div');
+    div.className = 'combo-item';
+    div.innerHTML = `
+      <div class="combo-cabecera">
+        <span class="combo-numero">${numero}</span>
+        <div class="combo-img">
+          <svg viewBox="0 0 100 124"><use href="#icono-milk"/></svg>
+        </div>
+      </div>
+      <button class="btn-desplegable" data-caja="${numero}" type="button">
+        <span class="btn-desplegable-texto">Elige tus ingredientes 🍓</span>
+        <span class="flecha">▼</span>
+      </button>
+      <div class="combo-opciones" id="opciones-caja-${numero}">
+        <label class="opcion-ing"><input type="checkbox" value="Ralladura de coco."> Ralladura de coco.</label>
+        <label class="opcion-ing"><input type="checkbox" value="Chispas Chocolate."> Chispas Chocolate.</label>
+        <label class="opcion-ing"><input type="checkbox" value="Chispas Alegría."> Chispas Alegría.</label>
+      </div>
+    `;
+    return div;
+  }
+
+  function activarListenersCaja(item) {
+    // Desplegable
+    const btn = item.querySelector('.btn-desplegable');
     btn.addEventListener('click', () => {
-      const item = btn.closest('.combo-item');
       item.classList.toggle('abierto');
     });
-  });
 
-  // ---- Checkboxes del combo: actualizar texto ----
-  document.querySelectorAll('.combo-opciones input[type="checkbox"]').forEach(chk => {
-    chk.addEventListener('change', (e) => {
-      const item = e.target.closest('.combo-item');
-      const marcados = item.querySelectorAll('input[type="checkbox"]:checked').length;
-      const btnTexto = item.querySelector('.btn-desplegable-texto');
-      if (marcados > 0) {
-        btnTexto.textContent = `Ingredientes elegidos (${marcados}) 🍓`;
-      } else {
-        btnTexto.textContent = 'Elige tus ingredientes 🍓';
-      }
+    // Checkboxes: actualizar texto del botón
+    item.querySelectorAll('.combo-opciones input[type="checkbox"]').forEach(chk => {
+      chk.addEventListener('change', () => {
+        const marcados = item.querySelectorAll('input[type="checkbox"]:checked').length;
+        const btnTexto = item.querySelector('.btn-desplegable-texto');
+        if (marcados > 0) {
+          btnTexto.textContent = `Ingredientes elegidos (${marcados}) 🍓`;
+        } else {
+          btnTexto.textContent = 'Elige tus ingredientes 🍓';
+        }
+      });
     });
-  });
+  }
 
-  // ---- Ver pedido del combo ----
+  // Aplica listeners a las 3 cajas iniciales del HTML
+  if (comboLista) {
+    comboLista.querySelectorAll('.combo-item').forEach(activarListenersCaja);
+  }
+
+  // ---- Botón MAS + : agrega una caja nueva ----
+  if (btnMas && comboLista) {
+    btnMas.addEventListener('click', () => {
+      comboPiezas++;
+      const nuevaCaja = crearCajaCombo(comboPiezas);
+      comboLista.appendChild(nuevaCaja);
+      activarListenersCaja(nuevaCaja);
+      activarFeedbackBotones(); // le pone ripple/vibración a los botones nuevos
+      actualizarTotalCombo();
+    });
+  }
+
+  // Inicializa el texto "3 piezas · $100 MXN"
+  actualizarTotalCombo();
+
+  // ---- Ver pedido del combo (dinámico) ----
   const btnVerPedidoCombo = document.getElementById('btn-ver-pedido-combo');
   if (btnVerPedidoCombo) {
     btnVerPedidoCombo.addEventListener('click', () => {
-      resumenCajaTexto = '3 cajas de Fresas con Chantilly - Combo $100 MXN';
+      const items = document.querySelectorAll('.combo-item');
+      const total = items.length;
+      const precio = calcularPrecioCombo(total);
+
+      resumenCajaTexto = `${total} cajas de Fresas con Chantilly - Combo $${precio} MXN`;
       const lineasIngredientes = [];
-      for (let i = 1; i <= 3; i++) {
-        const item = document.querySelector(`.combo-item:nth-child(${i})`);
+      items.forEach((item, idx) => {
         const checks = item.querySelectorAll('input[type="checkbox"]:checked');
         const ings = Array.from(checks).map(c => c.value);
-        lineasIngredientes.push(`Caja ${i}: ${ings.length ? ings.join(', ') : 'Ninguno'}`);
-      }
+        lineasIngredientes.push(`Caja ${idx + 1}: ${ings.length ? ings.join(', ') : 'Ninguno'}`);
+      });
 
       resumenIngredientesTexto = lineasIngredientes.join('\n');
 
@@ -321,6 +388,80 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.style.display = 'flex';
     });
   }
+
+  // ============================================================
+  // REINICIAR TODO EL FLUJO (para hacer un pedido nuevo)
+  // ============================================================
+  function reiniciarApp() {
+    // ---- Combo: dejar solo 3 cajas, desmarcar todo ----
+    comboPiezas = 3;
+    if (comboLista) {
+      const items = comboLista.querySelectorAll('.combo-item');
+      items.forEach((item, idx) => {
+        if (idx >= 3) item.remove();
+      });
+      comboLista.querySelectorAll('.combo-item').forEach(item => {
+        item.classList.remove('abierto');
+        item.querySelectorAll('input[type="checkbox"]').forEach(chk => chk.checked = false);
+        const btnTexto = item.querySelector('.btn-desplegable-texto');
+        if (btnTexto) btnTexto.textContent = 'Elige tus ingredientes 🍓';
+      });
+    }
+    actualizarTotalCombo();
+
+    // ---- Ingredientes simple ----
+    ingredientesSeleccionados.length = 0;
+    document.querySelectorAll('.btn-agregar').forEach(btn => {
+      btn.textContent = 'Agregar';
+    });
+
+    // ---- Nombre y dirección ----
+    const inputNombre = document.getElementById('input-nombre');
+    if (inputNombre) inputNombre.value = '';
+    if (inputDireccion) {
+      inputDireccion.value = '';
+      inputDireccion.disabled = true;
+      inputDireccion.placeholder = 'No requiere dirección (Recoger)';
+    }
+
+    // ---- Pago y envío a valores por defecto ----
+    pagoSeleccionado = 'Al entregar';
+    envioSeleccionado = 'Recoger';
+    if (grupoPago) {
+      grupoPago.querySelectorAll('.btn-opcion').forEach(b => {
+        b.classList.toggle('activo', b.dataset.valor === 'Al entregar');
+      });
+    }
+    if (grupoEnvio) {
+      grupoEnvio.querySelectorAll('.btn-opcion').forEach(b => {
+        b.classList.toggle('activo', b.dataset.valor === 'Recoger');
+      });
+    }
+
+    // ---- Variables de resumen ----
+    resumenCajaTexto = '1 caja de Fresas con Chantilly';
+    resumenIngredientesTexto = 'Ninguno';
+    origenPedido = 'simple';
+
+    const resumenCaja = document.getElementById('resumen-caja');
+    const resumenIng = document.getElementById('resumen-ingredientes');
+    if (resumenCaja) resumenCaja.textContent = '1 caja de Fresas con Chantilly';
+    if (resumenIng) resumenIng.textContent = 'Ninguno';
+
+    // ---- Limpiar mensaje de error ----
+    if (msgError) msgError.textContent = '';
+  }
+
+  // ---- cerrarModal global que además reinicia todo ----
+  window.cerrarModal = function () {
+    document.getElementById('modal-confirmacion').style.display = 'none';
+    reiniciarApp();
+    pantallaResumen.style.display = 'none';
+    pantallaPedido.style.display = 'none';
+    pantallaCombo.style.display = 'none';
+    pantallaInicio.style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 });
 
 // ---- Funciones globales de navegación ----
@@ -344,8 +485,4 @@ function volverAlPedido() {
 function volverAlPedidoSimple() {
   document.getElementById('pantalla-combo').style.display = 'none';
   document.getElementById('pantalla-pedido').style.display = 'flex';
-}
-
-function cerrarModal() {
-  document.getElementById('modal-confirmacion').style.display = 'none';
 }
