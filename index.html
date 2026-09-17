@@ -28,13 +28,50 @@
 
 <!-- ============ Pantalla principal (Galería) ============ -->
 <main class="galeria" id="pantalla-inicio">
-  <div class="panel clickable" id="panel-fresas">
+
+  <!-- ============ Header solo visible en la página de inicio ============ -->
+  <header class="header-inicio" id="header-inicio">
+    <div class="logo-koonol">
+      <span>Koonol</span>
+      <span>NAAT</span>
+    </div>
+    <div class="banner-producto">
+      <span class="banner-titulo">PRODUCTO</span>
+      <span class="banner-subtitulo">IRAPUATO GTO</span>
+    </div>
+  </header>
+  <!-- ============ Fin header ============ -->
+
+  <!-- ============ Tarjeta 1: Fresas con Chantilly ============ -->
+  <div class="panel clickable"
+       data-producto="Fresas Con Chantilly"
+       data-descripcion="Fresas frescas con chantilly"
+       data-precio="1 caja $35 MXN"
+       data-promo="Combo 3 x $100 MXN"
+       data-link="">
     <div class="ilustracion">
-      <img src="https://www.dropbox.com/scl/fi/6hdoiow6p9zrdggcq98ow/Fresasconchatillin.jpeg?rlkey=u5w0swogl12vnyrwc0e9f8tkt&st=tunp96rb&raw=1" alt="Fresas con Chantilly" loading="lazy">
-      <button class="btn-overlay">CONSULTAR SI HAY PRODUCTO</button>
+      <img src="https://www.dropbox.com/scl/fi/6hdoiow6p9zrdggcq98ow/Fresasconchatillin.jpeg?rlkey=u5w0swogl12vnyrwc0e9f8tkt&st=tunp96rb&raw=1"
+           alt="Fresas con Chantilly" loading="lazy">
+      <button class="btn-overlay" type="button">CONSULTAR SI HAY PRODUCTO</button>
     </div>
     <p>Fresas Con Chantilly</p>
   </div>
+
+  <!-- ============ Tarjeta 2: Calcetines ============ -->
+  <div class="panel clickable"
+       data-producto="Calcetines"
+       data-descripcion="Calcetines Koonol NAAT"
+       data-precio="Consultar precio"
+       data-promo=""
+       data-link="paguina">
+    <div class="ilustracion">
+      <img src="https://www.dropbox.com/scl/fi/h83l4vk3brcmlq9pg0ok2/Calcetines.jpeg?rlkey=grpx0lvk3pr4jfdy0qjvx1x16&st=scqv07pw&raw=1"
+           alt="Calcetines" loading="lazy">
+      <button class="btn-overlay" type="button">CONSULTAR SI HAY PRODUCTO</button>
+    </div>
+    <p>Calcetines</p>
+  </div>
+
 </main>
 
 <!-- ============ Pantalla de armado del pedido ============ -->
@@ -154,7 +191,6 @@
     </div>
   </div>
 
-  <!-- ============ Total + botón MAS + ============ -->
   <div class="combo-total-bar">
     <span class="combo-total-texto" id="combo-total-texto">3 piezas · $100 MXN</span>
     <button class="btn-mas" id="btn-mas" type="button">MAS +</button>
