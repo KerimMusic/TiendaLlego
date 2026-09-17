@@ -9,6 +9,26 @@
 </head>
 <body>
 
+<!-- ============ Audio de gota de agua ============ -->
+<audio id="sonido-gota" preload="auto" src="https://www.dropbox.com/scl/fi/efs87772j4heq48rb48sd/water-drop-sound-effect_SgdoBPPE.mp3?rlkey=j64gl8zlf2hi367xv48kl99ko&st=hszojwk8&raw=1"></audio>
+
+<script>
+  function reproducirGota() {
+    var audio = document.getElementById('sonido-gota');
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(function() {});
+    }
+  }
+
+  document.addEventListener('pointerdown', function(e) {
+    var boton = e.target.closest('button');
+    if (boton) {
+      reproducirGota();
+    }
+  }, true);
+</script>
+
 <!-- ============ Icono reutilizable: caja de leche ============ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="icono-milk" viewBox="0 0 100 124">
