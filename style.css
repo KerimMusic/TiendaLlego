@@ -88,9 +88,7 @@ body {
   background-color: #d90000;
 }
 
-.btn-overlay:active {
-  transform: translateX(-50%) scale(0.97);
-}
+/* NOTA: el estado :active se maneja con las nuevas reglas al final del archivo */
 
 /* ============ Pantalla de pedido y resumen ============ */
 #pantalla-pedido,
@@ -525,5 +523,130 @@ body {
 
   .panel {
     max-width: 300px;
+  }
+}
+
+/* ============================================================
+   FEEDBACK TÁCTIL — estilo app profesional
+   ============================================================ */
+:root {
+  --press-scale: .96;
+  --ease-out: cubic-bezier(.22, .61, .36, 1);
+  --ripple-color: rgba(255, 255, 255, .32);
+}
+
+/* ---------- Base de los botones ---------- */
+button {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  transition:
+    transform   .22s var(--ease-out),
+    filter      .22s var(--ease-out),
+    box-shadow  .22s var(--ease-out),
+    background-color .25s ease,
+    border-color     .25s ease;
+}
+
+/* ---------- Estado presionado (rápido, como app nativa) ---------- */
+button:active,
+button.is-pressed {
+  transform: scale(var(--press-scale));
+  filter: brightness(.9);
+  transition-duration: .07s;
+}
+
+/* El botón superpuesto necesita conservar su centrado horizontal */
+.btn-overlay:active,
+.btn-overlay.is-pressed {
+  transform: translateX(-50%) scale(var(--press-scale));
+}
+
+/* ---------- Onda expansiva (ripple) ---------- */
+button::after {
+  content: "";
+  position: absolute;
+  left: var(--rx, 50%);
+  top:  var(--ry, 50%);
+  width:  var(--rd, 0px);
+  height: var(--rd, 0px);
+  margin-left: calc(var(--rd, 0px) / -2);
+  margin-top:  calc(var(--rd, 0px) / -2);
+  border-radius: 50%;
+  background: var(--ripple-color);
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+button.rippling::after {
+  animation: app-ripple .6s var(--ease-out) forwards;
+}
+
+@keyframes app-ripple {
+  0%   { transform: scale(0);   opacity: .85; }
+  100% { transform: scale(1);   opacity: 0;   }
+}
+
+/* ---------- Foco visible (accesibilidad, solo teclado) ---------- */
+button:focus { outline: none; }
+
+button:focus-visible {
+  outline: 2px solid #ff2a2a;
+  outline-offset: 3px;
+}
+
+/* ---------- Botones deshabilitados ---------- */
+button:disabled,
+button[disabled] {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+
+button:disabled::after { display: none; }
+
+/* ---------- Tarjeta de producto (panel) ---------- */
+.panel.clickable {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.panel.clickable .ilustracion {
+  transition: transform .28s var(--ease-out), box-shadow .28s var(--ease-out);
+}
+
+.panel.clickable:active .ilustracion,
+.panel.clickable.is-pressed .ilustracion {
+  transform: scale(.975);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .55);
+}
+
+/* ---------- Casillas de ingredientes del combo ---------- */
+.opcion-ing {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background .18s ease, transform .18s var(--ease-out);
+}
+
+.opcion-ing:active,
+.opcion-ing.is-pressed {
+  transform: scale(.985);
+  background: #2a2a2a;
+}
+
+/* ---------- Respeta "reducir movimiento" del sistema ---------- */
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .panel.clickable .ilustracion,
+  .opcion-ing {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
   }
 }
