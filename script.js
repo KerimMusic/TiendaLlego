@@ -10,8 +10,7 @@ const NUMEROS_WHATSAPP = ['524621824592', '524626022906'];
 document.addEventListener('DOMContentLoaded', () => {
   // Animación de entrada para los paneles de la galería
   const panelesData = [
-    { titulo: 'Fresas Con Chantilly', alt: 'Paisaje 1' },
-    { titulo: 'Visuteria', alt: 'Paisaje 2' }
+    { titulo: 'Fresas Con Chantilly', alt: 'Fresas con Chantilly' }
   ];
 
   document.querySelectorAll('.panel').forEach((panel, i) => {
@@ -30,6 +29,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100 * i);
   });
 
+  // ============ EFECTO TÁCTIL PROFESIONAL (ripple + vibración) ============
+  function crearRipple(e) {
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const tamaño = Math.max(rect.width, rect.height) * 2;
+
+    btn.style.setProperty('--rx', `${x}px`);
+    btn.style.setProperty('--ry', `${y}px`);
+    btn.style.setProperty('--rd', `${tamaño}px`);
+
+    btn.classList.remove('rippling');
+    void btn.offsetWidth; // reinicia la animación
+    btn.classList.add('rippling');
+
+    // Vibración corta si el dispositivo lo soporta
+    if (navigator.vibrate) navigator.vibrate(8);
+  }
+
+  function activarFeedbackBotones() {
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.dataset.feedbackActivo) return;
+      btn.dataset.feedbackActivo = 'true';
+
+      btn.addEventListener('pointerdown', crearRipple);
+
+      btn.addEventListener('pointerdown', () => btn.classList.add('is-pressed'));
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
+        btn.addEventListener(evt, () => btn.classList.remove('is-pressed'));
+      });
+    });
+  }
+
+  // Feedback para las tarjetas clicables (panel de producto)
+  function activarFeedbackPaneles() {
+    document.querySelectorAll('.panel.clickable').forEach(panel => {
+      if (panel.dataset.feedbackActivo) return;
+      panel.dataset.feedbackActivo = 'true';
+
+      panel.addEventListener('pointerdown', () => panel.classList.add('is-pressed'));
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
+        panel.addEventListener(evt, () => panel.classList.remove('is-pressed'));
+      });
+    });
+  }
+
+  // Inicializar feedback táctil
+  activarFeedbackBotones();
+  activarFeedbackPaneles();
+
   // Referencias a pantallas
   const pantallaInicio = document.getElementById('pantalla-inicio');
   const pantallaPedido = document.getElementById('pantalla-pedido');
@@ -41,8 +91,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnConsultar = document.querySelector('.btn-overlay');
   if (btnConsultar) {
     btnConsultar.addEventListener('click', (evento) => {
-      evento.stopPropagation();
-      window.open('https://t.me/Soporte95', '_blank');
+      evento.stopPropagation(); // evita que se abra la pantalla de pedido
+
+      // Tomamos el nombre del producto desde la tarjeta
+      const panel = btnConsultar.closest('.panel');
+      const nombreProducto =
+        panel?.querySelector('p')?.textContent.trim() || 'Fresas Con Chantilly';
+
+      // Mensaje pre-escrito con la información del producto
+      const mensaje = [
+        '¡Hola! 🍓 Quisiera saber si todavía tienen producto disponible:',
+        '',
+        `📦 Producto: ${nombreProducto}`,
+        '🍓 Descripción: Fresas frescas con chantilly',
+        '💰 Precio: 1 caja $35 MXN',
+        '🎁 Promoción: Combo 3 x $100 MXN',
+        '🧁 Ingredientes a elegir: Ralladura de coco, Chispas Chocolate, Chispas Alegría',
+        '🛵 Entrega: A domicilio o recoger en tienda',
+        '',
+        '¿Aún hay disponibilidad? ¡Gracias! ✨'
+      ].join('\n');
+
+      const urlTelegram =
+        `https://t.me/Soporte95?text=${encodeURIComponent(mensaje)}`;
+
+      window.open(urlTelegram, '_blank');
     });
   }
 
@@ -172,9 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
   configurarGrupo(grupoPago, (valor) => { pagoSeleccionado = valor; });
   configurarGrupo(grupoEnvio, (valor) => {
     envioSeleccionado = valor;
-    if (valor === 'Envio a domicilio') {
+    if (valor === 'Envío a domicilio') {
       inputDireccion.disabled = false;
-      inputDireccion.placeholder = 'Direccion de envio';
+      inputDireccion.placeholder = 'Dirección de envío';
     } else {
       inputDireccion.disabled = true;
       inputDireccion.value = '';
@@ -200,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msgError.textContent = 'Por favor ingresa tu nombre.';
         return;
       }
-      if (envioSeleccionado === 'Envio a domicilio' && !direccion) {
+      if (envioSeleccionado === 'Envío a domicilio' && !direccion) {
         msgError.textContent = 'Por favor ingresa la dirección de envío.';
         return;
       }
@@ -216,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '🍫 *Ingredientes:*',
         resumenIngredientesTexto,
         `💳 *Pago:* ${pagoSeleccionado}`,
-        `🛵 *Envío:* ${envioSeleccionado}${envioSeleccionado === 'Envio a domicilio' ? ' - ' + direccion : ''}`,
+        `🛵 *Envío:* ${envioSeleccionado}${envioSeleccionado === 'Envío a domicilio' ? ' - ' + direccion : ''}`,
         '',
         '¡Gracias por tu pedido! ✨'
       ].join('\n');
@@ -237,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <strong>Pedido:</strong> ${resumenCajaTexto}<br>
         <strong>Ingredientes:</strong><br>${resumenIngredientesTexto.replace(/\n/g, '<br>')}<br>
         <strong>Pago:</strong> ${pagoSeleccionado}<br>
-        <strong>Envío:</strong> ${envioSeleccionado}${envioSeleccionado === 'Envio a domicilio' ? ' - ' + direccion : ''}
+        <strong>Envío:</strong> ${envioSeleccionado}${envioSeleccionado === 'Envío a domicilio' ? ' - ' + direccion : ''}
         <br><br>
         <span style="color:#aaa;font-size:13px;">Se abrió WhatsApp para enviar tu pedido.</span><br>
         <a href="${urlWhatsApp}" target="_blank" style="color:#ff2a2a;font-size:13px;">
