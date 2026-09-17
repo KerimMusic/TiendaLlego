@@ -764,3 +764,39 @@ button:disabled::after { display: none; }
   .banner-titulo  { font-size: 22px; }
   .banner-producto { padding: 8px 16px 7px; }
 }
+
+/* ============================================================
+   PANTALLA DE CALCETINES (PRÓXIMAMENTE)
+   ============================================================ */
+#pantalla-calcetines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #000;
+  padding: 20px;
+  position: relative;
+}
+
+.btn-volver-absoluto {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.proximamente-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-proximamente {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
