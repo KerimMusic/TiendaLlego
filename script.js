@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <label class="opcion-ing"><input type="checkbox" value="Ralladura de coco."> Ralladura de coco.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Chocolate."> Chispas Chocolate.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Alegría."> Chispas Alegría.</label>
+        <label class="opcion-ing"><input type="checkbox" value="Jarabe de Fresa."> Jarabe de Fresa.</label>
       </div>
     `;
     return div;
