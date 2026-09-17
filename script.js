@@ -9,18 +9,29 @@ let resumenIngredientesTexto = 'Ninguno';
 const NUMEROS_WHATSAPP = ['524621824592', '524626022906'];
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Animación de entrada para los paneles de la galería
-  const panelesData = [
-    { titulo: 'Fresas Con Chantilly', alt: 'Fresas con Chantilly' }
-  ];
 
-  document.querySelectorAll('.panel').forEach((panel, i) => {
-    const data = panelesData[i];
-    if (!data) return;
-    const p = panel.querySelector('p');
-    if (p) p.textContent = data.titulo;
-    const img = panel.querySelector('img');
-    if (img) img.alt = data.alt;
+  // ============================================================
+  // 🎲 ORDEN ALEATORIO DE LOS PRODUCTOS
+  // ============================================================
+  const galeria = document.getElementById('pantalla-inicio');
+
+  function mezclarProductos() {
+    if (!galeria) return [];
+    const paneles = Array.from(galeria.querySelectorAll('.panel.clickable'));
+    // Fisher–Yates
+    for (let i = paneles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [paneles[i], paneles[j]] = [paneles[j], paneles[i]];
+    }
+    // Reinsertar en el nuevo orden dentro del <main>
+    paneles.forEach(p => galeria.appendChild(p));
+    return paneles;
+  }
+
+  const panelesOrdenados = mezclarProductos();
+
+  // ============ Animación de entrada ============
+  panelesOrdenados.forEach((panel, i) => {
     panel.style.opacity = 0;
     panel.style.transform = 'translateY(12px)';
     setTimeout(() => {
@@ -30,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100 * i);
   });
 
-  // ============ EFECTO TÁCTIL PROFESIONAL (ripple + vibración) ============
+  // ============ EFECTO TÁCTIL PROFESIONAL ============
   function crearRipple(e) {
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
@@ -43,10 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.style.setProperty('--rd', `${tamaño}px`);
 
     btn.classList.remove('rippling');
-    void btn.offsetWidth; // reinicia la animación
+    void btn.offsetWidth;
     btn.classList.add('rippling');
 
-    // Vibración corta si el dispositivo lo soporta
     if (navigator.vibrate) navigator.vibrate(8);
   }
 
@@ -56,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.dataset.feedbackActivo = 'true';
 
       btn.addEventListener('pointerdown', crearRipple);
-
       btn.addEventListener('pointerdown', () => btn.classList.add('is-pressed'));
       ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
         btn.addEventListener(evt, () => btn.classList.remove('is-pressed'));
@@ -64,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Feedback para las tarjetas clicables (panel de producto)
   function activarFeedbackPaneles() {
     document.querySelectorAll('.panel.clickable').forEach(panel => {
       if (panel.dataset.feedbackActivo) return;
@@ -77,50 +85,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Inicializar feedback táctil
   activarFeedbackBotones();
   activarFeedbackPaneles();
 
-  // Referencias a pantallas
-  const pantallaInicio = document.getElementById('pantalla-inicio');
-  const pantallaPedido = document.getElementById('pantalla-pedido');
-  const pantallaCombo = document.getElementById('pantalla-combo');
+  // ============ Referencias a pantallas ============
+  const pantallaInicio  = document.getElementById('pantalla-inicio');
+  const pantallaPedido  = document.getElementById('pantalla-pedido');
+  const pantallaCombo   = document.getElementById('pantalla-combo');
   const pantallaResumen = document.getElementById('pantalla-resumen');
-  const panelFresas = document.getElementById('panel-fresas');
 
-  // ---- Botón consultar disponibilidad ----
-  const btnConsultar = document.querySelector('.btn-overlay');
-  if (btnConsultar) {
-    btnConsultar.addEventListener('click', (evento) => {
-      evento.stopPropagation(); // evita que se abra la pantalla de pedido
+  // ============================================================
+  // BOTÓN "CONSULTAR SI HAY PRODUCTO"
+  // 🛡️ Blindado: NO redirige a ninguna web externa
+  // ============================================================
+  document.querySelectorAll('.btn-overlay').forEach(btn => {
+    btn.addEventListener('click', (evento) => {
+      evento.preventDefault();
+      evento.stopPropagation();
 
-      // Tomamos el nombre del producto desde la tarjeta
-      const panel = btnConsultar.closest('.panel');
-      const nombreProducto =
-        panel?.querySelector('p')?.textContent.trim() || 'Fresas Con Chantilly';
+      const panel = btn.closest('.panel');
+      const nombre      = panel?.dataset.producto     || 'Producto';
+      const descripcion = panel?.dataset.descripcion  || '';
+      const precio      = panel?.dataset.precio       || '';
+      const promo       = panel?.dataset.promo        || '';
 
-      // Mensaje pre-escrito con la información del producto
-      const mensaje = [
+      const lineas = [
         '¡Hola! 🍓 Quisiera saber si todavía tienen producto disponible:',
         '',
-        `📦 Producto: ${nombreProducto}`,
-        '🍓 Descripción: Fresas frescas con chantilly',
-        '💰 Precio: 1 caja $35 MXN',
-        '🎁 Promoción: Combo 3 x $100 MXN',
-        '🧁 Ingredientes a elegir: Ralladura de coco, Chispas Chocolate, Chispas Alegría',
-        '🛵 Entrega: A domicilio o recoger en tienda',
-        '',
-        '¿Aún hay disponibilidad? ¡Gracias! ✨'
-      ].join('\n');
+        `📦 Producto: ${nombre}`
+      ];
+      if (descripcion) lineas.push(`🍓 Descripción: ${descripcion}`);
+      if (precio)      lineas.push(`💰 Precio: ${precio}`);
+      if (promo)       lineas.push(`🎁 Promoción: ${promo}`);
+      lineas.push('', '¿Aún hay disponibilidad? ¡Gracias! ✨');
 
-      const urlTelegram =
-        `https://t.me/Soporte95?text=${encodeURIComponent(mensaje)}`;
-
-      window.open(urlTelegram, '_blank');
+      const mensaje = lineas.join('\n');
+      const urlTelegram = `https://t.me/Soporte95?text=${encodeURIComponent(mensaje)}`;
+      window.open(urlTelegram, '_blank', 'noopener,noreferrer');
     });
-  }
+  });
 
-  // ---- Ingredientes simple ----
+  // ============ Ingredientes simple ============
   const ingredientesSeleccionados = [];
   const botonesAgregar = document.querySelectorAll('.btn-agregar');
 
@@ -139,17 +144,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---- Navegación ----
-  if (panelFresas) {
-    panelFresas.addEventListener('click', () => {
-      pantallaInicio.style.display = 'none';
-      pantallaPedido.style.display = 'flex';
-      pantallaCombo.style.display = 'none';
-      pantallaResumen.style.display = 'none';
-    });
-  }
+  // ============================================================
+  // NAVEGACIÓN DE PANELES (BLINDADA)
+  // - Si el panel tiene data-link con URL → abre esa URL
+  // - Si data-link está vacío → abre la pantalla de pedido
+  // ============================================================
+  document.querySelectorAll('.panel.clickable').forEach(panel => {
+    panel.addEventListener('click', (evento) => {
+      evento.preventDefault();
+      evento.stopPropagation();
 
-  // ---- Ver pedido simple ----
+      const link = (panel.dataset.link || '').trim();
+
+      // Si el admin puso un enlace, lo respetamos (pero con noopener)
+      if (link) {
+        window.open(link, '_blank', 'noopener,noreferrer');
+        return;
+      }
+
+      // Comportamiento por defecto: abrir pantalla de pedido
+      pantallaInicio.style.display  = 'none';
+      pantallaPedido.style.display  = 'flex';
+      pantallaCombo.style.display   = 'none';
+      pantallaResumen.style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // ============ Ver pedido simple ============
   const btnVerPedido = document.getElementById('btn-ver-pedido');
   if (btnVerPedido) {
     btnVerPedido.addEventListener('click', () => {
@@ -169,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ---- Botón Combo ----
+  // ============ Botón Combo ============
   const btnCombo = document.getElementById('btn-combo');
   if (btnCombo) {
     btnCombo.addEventListener('click', () => {
@@ -180,8 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================================
-  // COMBO DINÁMICO: piezas ilimitadas + precio automático
-  // Regla: cada grupo de 3 piezas = $100, piezas sueltas = $35
+  // COMBO DINÁMICO
   // ============================================================
   let comboPiezas = 3;
   const comboLista = document.querySelector('.combo-lista');
@@ -224,13 +245,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function activarListenersCaja(item) {
-    // Desplegable
     const btn = item.querySelector('.btn-desplegable');
     btn.addEventListener('click', () => {
       item.classList.toggle('abierto');
     });
 
-    // Checkboxes: actualizar texto del botón
     item.querySelectorAll('.combo-opciones input[type="checkbox"]').forEach(chk => {
       chk.addEventListener('change', () => {
         const marcados = item.querySelectorAll('input[type="checkbox"]:checked').length;
@@ -244,27 +263,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Aplica listeners a las 3 cajas iniciales del HTML
   if (comboLista) {
     comboLista.querySelectorAll('.combo-item').forEach(activarListenersCaja);
   }
 
-  // ---- Botón MAS + : agrega una caja nueva ----
   if (btnMas && comboLista) {
     btnMas.addEventListener('click', () => {
       comboPiezas++;
       const nuevaCaja = crearCajaCombo(comboPiezas);
       comboLista.appendChild(nuevaCaja);
       activarListenersCaja(nuevaCaja);
-      activarFeedbackBotones(); // le pone ripple/vibración a los botones nuevos
+      activarFeedbackBotones();
       actualizarTotalCombo();
     });
   }
 
-  // Inicializa el texto "3 piezas · $100 MXN"
   actualizarTotalCombo();
 
-  // ---- Ver pedido del combo (dinámico) ----
+  // ============ Ver pedido del combo ============
   const btnVerPedidoCombo = document.getElementById('btn-ver-pedido-combo');
   if (btnVerPedidoCombo) {
     btnVerPedidoCombo.addEventListener('click', () => {
@@ -291,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ---- Opciones de pago y envío ----
+  // ============ Opciones de pago y envío ============
   const grupoPago = document.getElementById('grupo-pago');
   const grupoEnvio = document.getElementById('grupo-envio');
   const inputDireccion = document.getElementById('input-direccion');
@@ -327,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inputDireccion.placeholder = 'No requiere dirección (Recoger)';
   }
 
-  // ---- Hacer pedido (envío por WhatsApp) ----
+  // ============ Hacer pedido (WhatsApp) ============
   const btnHacerPedido = document.getElementById('btn-hacer-pedido');
   const msgError = document.getElementById('msg-error');
 
@@ -347,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       msgError.textContent = '';
 
-      // ---- Mensaje que se enviará por WhatsApp ----
       const mensaje = [
         '🍓 *NUEVO PEDIDO - Fresas con Chantilly* 🍓',
         '',
@@ -361,14 +376,11 @@ document.addEventListener('DOMContentLoaded', () => {
         '¡Gracias por tu pedido! ✨'
       ].join('\n');
 
-      // ---- Elegir número al azar ----
       const numeroElegido = NUMEROS_WHATSAPP[Math.floor(Math.random() * NUMEROS_WHATSAPP.length)];
       const urlWhatsApp = `https://wa.me/${numeroElegido}?text=${encodeURIComponent(mensaje)}`;
 
-      // Abrir WhatsApp
-      window.open(urlWhatsApp, '_blank');
+      window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
 
-      // ---- Modal de confirmación ----
       const modal = document.getElementById('modal-confirmacion');
       const detalle = document.getElementById('modal-detalle');
 
@@ -380,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <strong>Envío:</strong> ${envioSeleccionado}${envioSeleccionado === 'Envío a domicilio' ? ' - ' + direccion : ''}
         <br><br>
         <span style="color:#aaa;font-size:13px;">Se abrió WhatsApp para enviar tu pedido.</span><br>
-        <a href="${urlWhatsApp}" target="_blank" style="color:#ff2a2a;font-size:13px;">
+        <a href="${urlWhatsApp}" target="_blank" rel="noopener noreferrer" style="color:#ff2a2a;font-size:13px;">
           ¿No se abrió? Toca aquí para enviarlo
         </a>
       `;
@@ -389,11 +401,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ============================================================
-  // REINICIAR TODO EL FLUJO (para hacer un pedido nuevo)
-  // ============================================================
+  // ============ Reiniciar flujo ============
   function reiniciarApp() {
-    // ---- Combo: dejar solo 3 cajas, desmarcar todo ----
     comboPiezas = 3;
     if (comboLista) {
       const items = comboLista.querySelectorAll('.combo-item');
@@ -409,13 +418,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     actualizarTotalCombo();
 
-    // ---- Ingredientes simple ----
     ingredientesSeleccionados.length = 0;
     document.querySelectorAll('.btn-agregar').forEach(btn => {
       btn.textContent = 'Agregar';
     });
 
-    // ---- Nombre y dirección ----
     const inputNombre = document.getElementById('input-nombre');
     if (inputNombre) inputNombre.value = '';
     if (inputDireccion) {
@@ -424,7 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
       inputDireccion.placeholder = 'No requiere dirección (Recoger)';
     }
 
-    // ---- Pago y envío a valores por defecto ----
     pagoSeleccionado = 'Al entregar';
     envioSeleccionado = 'Recoger';
     if (grupoPago) {
@@ -438,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // ---- Variables de resumen ----
     resumenCajaTexto = '1 caja de Fresas con Chantilly';
     resumenIngredientesTexto = 'Ninguno';
     origenPedido = 'simple';
@@ -448,11 +453,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (resumenCaja) resumenCaja.textContent = '1 caja de Fresas con Chantilly';
     if (resumenIng) resumenIng.textContent = 'Ninguno';
 
-    // ---- Limpiar mensaje de error ----
     if (msgError) msgError.textContent = '';
   }
 
-  // ---- cerrarModal global que además reinicia todo ----
   window.cerrarModal = function () {
     document.getElementById('modal-confirmacion').style.display = 'none';
     reiniciarApp();
@@ -460,11 +463,23 @@ document.addEventListener('DOMContentLoaded', () => {
     pantallaPedido.style.display = 'none';
     pantallaCombo.style.display = 'none';
     pantallaInicio.style.display = 'flex';
+
+    // 🎲 Re-mezclar productos al volver al inicio
+    const paneles = mezclarProductos();
+    paneles.forEach((p, i) => {
+      p.style.opacity = 0;
+      p.style.transform = 'translateY(12px)';
+      setTimeout(() => {
+        p.style.opacity = 1;
+        p.style.transform = 'translateY(0)';
+      }, 80 * i);
+    });
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 });
 
-// ---- Funciones globales de navegación ----
+// ============ Navegación global ============
 function volverAlInicio() {
   document.getElementById('pantalla-pedido').style.display = 'none';
   document.getElementById('pantalla-combo').style.display = 'none';
