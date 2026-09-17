@@ -568,7 +568,6 @@ body {
   --ripple-color: rgba(255, 255, 255, .32);
 }
 
-/* ---------- Base de los botones ---------- */
 button {
   position: relative;
   overflow: hidden;
@@ -584,7 +583,6 @@ button {
     border-color     .25s ease;
 }
 
-/* ---------- Estado presionado ---------- */
 button:active,
 button.is-pressed {
   transform: scale(var(--press-scale));
@@ -597,7 +595,6 @@ button.is-pressed {
   transform: translateX(-50%) scale(var(--press-scale));
 }
 
-/* ---------- Onda expansiva (ripple) ---------- */
 button::after {
   content: "";
   position: absolute;
@@ -624,7 +621,6 @@ button.rippling::after {
   100% { transform: scale(1);   opacity: 0;   }
 }
 
-/* ---------- Foco visible (accesibilidad) ---------- */
 button:focus { outline: none; }
 
 button:focus-visible {
@@ -632,7 +628,6 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* ---------- Botones deshabilitados ---------- */
 button:disabled,
 button[disabled] {
   opacity: .5;
@@ -644,7 +639,6 @@ button[disabled] {
 
 button:disabled::after { display: none; }
 
-/* ---------- Tarjeta de producto (panel) ---------- */
 .panel.clickable {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -660,7 +654,6 @@ button:disabled::after { display: none; }
   box-shadow: 0 3px 10px rgba(0, 0, 0, .55);
 }
 
-/* ---------- Casillas de ingredientes del combo ---------- */
 .opcion-ing {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -673,7 +666,6 @@ button:disabled::after { display: none; }
   background: #2a2a2a;
 }
 
-/* ---------- Respeta "reducir movimiento" ---------- */
 @media (prefers-reduced-motion: reduce) {
   button,
   .panel.clickable .ilustracion,
@@ -684,7 +676,7 @@ button:disabled::after { display: none; }
 }
 
 /* ============================================================
-   HEADER DE LA PÁGINA DE INICIO  (Koonol NAAT · PRODUCTO)
+   HEADER DE LA PÁGINA DE INICIO  (PRODUCTO · IRAPUATO GTO)
    ============================================================ */
 .header-inicio {
   position: fixed;
@@ -701,21 +693,6 @@ button:disabled::after { display: none; }
 }
 
 .header-inicio > * { pointer-events: auto; }
-
-.logo-koonol {
-  display: flex;
-  flex-direction: column;
-  font-family: 'Brush Script MT', 'Segoe Script', 'Lucida Handwriting',
-               'Comic Sans MS', cursive;
-  font-style: italic;
-  font-weight: 400;
-  color: #fff;
-  font-size: 30px;
-  line-height: 0.85;
-  letter-spacing: 0.5px;
-  padding-left: 4px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
 
 .banner-producto {
   background-color: #ff0000;
@@ -748,55 +725,17 @@ button:disabled::after { display: none; }
 }
 
 #pantalla-inicio.galeria {
-  padding-top: 150px;
+  padding-top: 110px;
 }
 
 @media (min-width: 600px) {
-  #pantalla-inicio.galeria { padding-top: 170px; }
-  .logo-koonol    { font-size: 34px; }
+  #pantalla-inicio.galeria { padding-top: 120px; }
   .banner-titulo  { font-size: 30px; }
   .banner-subtitulo { font-size: 12px; }
 }
 
 @media (max-width: 360px) {
-  #pantalla-inicio.galeria { padding-top: 138px; }
-  .logo-koonol    { font-size: 26px; }
+  #pantalla-inicio.galeria { padding-top: 100px; }
   .banner-titulo  { font-size: 22px; }
   .banner-producto { padding: 8px 16px 7px; }
-}
-
-/* ============================================================
-   PANTALLA DE CALCETINES (PRÓXIMAMENTE)
-   ============================================================ */
-#pantalla-calcetines {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #000;
-  padding: 20px;
-  position: relative;
-}
-
-.btn-volver-absoluto {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-}
-
-.proximamente-container {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.img-proximamente {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
 }
