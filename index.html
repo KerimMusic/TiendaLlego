@@ -9,12 +9,14 @@
 </head>
 <body>
 
-<!-- ============ Audio de gota de agua ============ -->
+<!-- ============ Audios ============ -->
 <audio id="sonido-gota" preload="auto" src="https://www.dropbox.com/scl/fi/efs87772j4heq48rb48sd/water-drop-sound-effect_SgdoBPPE.mp3?rlkey=j64gl8zlf2hi367xv48kl99ko&st=hszojwk8&raw=1"></audio>
+<audio id="sonido-chispas" preload="auto" src="https://www.dropbox.com/scl/fi/b69ib05o9dmilvf9yuhgk/Efectos-de-sonido-chispas..mp3?rlkey=y2vwgvrg8wtuq4zbdn1qe8aka&st=qhn8rwwp&raw=1"></audio>
+<audio id="sonido-miel" preload="auto" src="https://www.dropbox.com/scl/fi/7znbg5gvchpqjx12o53jf/Efectos-de-soido-Miel.mp3?rlkey=n2za3ouhscz7qvh9gx4gdlta0&st=uetul1wo&raw=1"></audio>
 
 <script>
-  function reproducirGota() {
-    var audio = document.getElementById('sonido-gota');
+  function reproducirAudio(idAudio) {
+    var audio = document.getElementById(idAudio);
     if (audio) {
       audio.currentTime = 0;
       audio.play().catch(function() {});
@@ -23,9 +25,25 @@
 
   document.addEventListener('pointerdown', function(e) {
     var boton = e.target.closest('button');
-    if (boton) {
-      reproducirGota();
+    if (!boton) return;
+
+    // === Botones de "Prepara tus fresas" → sonidos personalizados ===
+    if (boton.classList.contains('btn-agregar')) {
+      var itemRow = boton.closest('.item-row');
+      if (itemRow) {
+        var texto = itemRow.querySelector('.item-text');
+        var nombre = texto ? texto.textContent.trim() : '';
+        if (nombre.indexOf('Jarabe') !== -1) {
+          reproducirAudio('sonido-miel');
+        } else {
+          reproducirAudio('sonido-chispas');
+        }
+      }
+      return; // No se reproduce la gota en estos botones
     }
+
+    // === Resto de botones → comportamiento original (gota) ===
+    reproducirAudio('sonido-gota');
   }, true);
 </script>
 
@@ -65,6 +83,8 @@
     ¡Tú eliges cómo disfrutarlas! 🍓✨</p>
   </div>
 
+  <h1>Prepara tus fresas</h1>
+
   <div class="lista-ingredientes">
     <div class="item-row">
       <div class="item-img-circle">
@@ -87,6 +107,14 @@
         <img src="https://www.dropbox.com/scl/fi/e5uo6uiih7vy3s88zg2l8/Alegria.jpeg?rlkey=q2dmn6wh9uobc1kpdp6vydzjs&st=0yynewjx&raw=1" alt="Chispas Alegría">
       </div>
       <span class="item-text">Chispas Alegría.</span>
+      <button class="btn-agregar">Agregar</button>
+    </div>
+
+    <div class="item-row">
+      <div class="item-img-circle">
+        <img src="https://www.dropbox.com/scl/fi/ge4uztr87t9974v8s5cda/JarabeDeFresa.jpeg?rlkey=psrnq4cdl7gd2ecv8fleb40pq&st=sc0zvkas&raw=1" alt="Jarabe de Fresa">
+      </div>
+      <span class="item-text">Jarabe de Fresa.</span>
       <button class="btn-agregar">Agregar</button>
     </div>
   </div>
@@ -119,6 +147,7 @@
         <label class="opcion-ing"><input type="checkbox" value="Ralladura de coco."> Ralladura de coco.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Chocolate."> Chispas Chocolate.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Alegría."> Chispas Alegría.</label>
+        <label class="opcion-ing"><input type="checkbox" value="Jarabe de Fresa."> Jarabe de Fresa.</label>
       </div>
     </div>
 
@@ -138,6 +167,7 @@
         <label class="opcion-ing"><input type="checkbox" value="Ralladura de coco."> Ralladura de coco.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Chocolate."> Chispas Chocolate.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Alegría."> Chispas Alegría.</label>
+        <label class="opcion-ing"><input type="checkbox" value="Jarabe de Fresa."> Jarabe de Fresa.</label>
       </div>
     </div>
 
@@ -157,6 +187,7 @@
         <label class="opcion-ing"><input type="checkbox" value="Ralladura de coco."> Ralladura de coco.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Chocolate."> Chispas Chocolate.</label>
         <label class="opcion-ing"><input type="checkbox" value="Chispas Alegría."> Chispas Alegría.</label>
+        <label class="opcion-ing"><input type="checkbox" value="Jarabe de Fresa."> Jarabe de Fresa.</label>
       </div>
     </div>
   </div>
