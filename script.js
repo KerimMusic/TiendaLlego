@@ -8,6 +8,9 @@ let resumenIngredientesTexto = 'Ninguno';
 /* Números de WhatsApp (se elige uno al azar en cada pedido) */
 const NUMEROS_WHATSAPP = ['524621824592', '524626022906'];
 
+/* ============ Telegram ============ */
+const TELEGRAM_USUARIO = 'Soporte95'; // @Soporte95
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // ============================================================
@@ -93,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const pantallaResumen = document.getElementById('pantalla-resumen');
 
   // ============================================================
-  // BOTÓN "CONSULTAR SI HAY PRODUCTO"  →  WhatsApp
+  // BOTÓN "CONSULTAR SI HAY PRODUCTO"  →  Telegram (@Soporte95)
+  // Envía TODA la información del producto con mensaje predefinido
   // ============================================================
   document.querySelectorAll('.btn-overlay').forEach(btn => {
     btn.addEventListener('click', (evento) => {
@@ -105,7 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const descripcion = panel?.dataset.descripcion  || '';
       const precio      = panel?.dataset.precio       || '';
       const promo       = panel?.dataset.promo        || '';
+      const link        = panel?.dataset.link         || '';
 
+      // Construir el mensaje con TODA la información
       const lineas = [
         '¡Hola! 🍓 Quisiera saber si todavía tienen producto disponible:',
         '',
@@ -114,12 +120,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (descripcion) lineas.push(`🍓 Descripción: ${descripcion}`);
       if (precio)      lineas.push(`💰 Precio: ${precio}`);
       if (promo)       lineas.push(`🎁 Promoción: ${promo}`);
+      if (link)        lineas.push(`🔗 Link: ${link}`);
       lineas.push('', '¿Aún hay disponibilidad? ¡Gracias! ✨');
 
       const mensaje = lineas.join('\n');
-      const numero = NUMEROS_WHATSAPP[Math.floor(Math.random() * NUMEROS_WHATSAPP.length)];
-      const urlWhatsApp = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-      window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
+      const mensajeCodificado = encodeURIComponent(mensaje);
+
+      // ✅ URL de Telegram con mensaje predefinido
+      const urlTelegram = `https://t.me/${TELEGRAM_USUARIO}?text=${mensajeCodificado}`;
+
+      // Copiar al portapapeles como respaldo
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(mensaje).catch(() => {});
+      }
+
+      // Abrir Telegram con el mensaje ya escrito
+      window.open(urlTelegram, '_blank', 'noopener,noreferrer');
     });
   });
 
