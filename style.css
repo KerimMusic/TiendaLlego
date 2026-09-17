@@ -1,3 +1,4 @@
+/* style.css */
 /* ============ Reset básico ============ */
 * {
   margin: 0;
@@ -511,6 +512,40 @@ body {
 
 .btn-rosa:hover {
   background-color: #cc00a3;
+}
+
+/* ============ Total y botón MAS + del combo ============ */
+.combo-total-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.combo-total-texto {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.btn-mas {
+  background-color: #ff2a2a;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 1px;
+  transition: background-color 0.25s ease;
+}
+
+.btn-mas:hover {
+  background-color: #d90000;
 }
 
 /* ============ Responsive ============ */
