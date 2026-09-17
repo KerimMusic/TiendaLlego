@@ -18,12 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function mezclarProductos() {
     if (!galeria) return [];
     const paneles = Array.from(galeria.querySelectorAll('.panel.clickable'));
-    // Fisher–Yates
     for (let i = paneles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [paneles[i], paneles[j]] = [paneles[j], paneles[i]];
     }
-    // Reinsertar en el nuevo orden dentro del <main>
     paneles.forEach(p => galeria.appendChild(p));
     return paneles;
   }
@@ -93,11 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const pantallaPedido  = document.getElementById('pantalla-pedido');
   const pantallaCombo   = document.getElementById('pantalla-combo');
   const pantallaResumen = document.getElementById('pantalla-resumen');
-  const pantallaCalcetines = document.getElementById('pantalla-calcetines');
 
   // ============================================================
-  // BOTÓN "CONSULTAR SI HAY PRODUCTO"
-  // 🛡️ Blindado: NO redirige a ninguna web externa
+  // BOTÓN "CONSULTAR SI HAY PRODUCTO"  →  WhatsApp
   // ============================================================
   document.querySelectorAll('.btn-overlay').forEach(btn => {
     btn.addEventListener('click', (evento) => {
@@ -121,8 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
       lineas.push('', '¿Aún hay disponibilidad? ¡Gracias! ✨');
 
       const mensaje = lineas.join('\n');
-      const urlTelegram = `https://t.me/Soporte95?text=${encodeURIComponent(mensaje)}`;
-      window.open(urlTelegram, '_blank', 'noopener,noreferrer');
+      const numero = NUMEROS_WHATSAPP[Math.floor(Math.random() * NUMEROS_WHATSAPP.length)];
+      const urlWhatsApp = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+      window.open(urlWhatsApp, '_blank', 'noopener,noreferrer');
     });
   });
 
@@ -146,10 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================================
-  // NAVEGACIÓN DE PANELES (BLINDADA)
-  // - Si el panel tiene data-link="calcetines" → muestra pantalla calcetines
-  // - Si el panel tiene otra URL → abre esa URL
-  // - Si data-link está vacío → abre la pantalla de pedido
+  // NAVEGACIÓN DE PANELES
   // ============================================================
   document.querySelectorAll('.panel.clickable').forEach(panel => {
     panel.addEventListener('click', (evento) => {
@@ -158,24 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const link = (panel.dataset.link || '').trim();
 
-      // Caso especial: Pantalla de Calcetines (Próximamente)
-      if (link === 'calcetines') {
-        pantallaInicio.style.display = 'none';
-        pantallaCalcetines.style.display = 'flex';
-        pantallaPedido.style.display = 'none';
-        pantallaCombo.style.display = 'none';
-        pantallaResumen.style.display = 'none';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      // Si el admin puso un enlace externo, lo respetamos
       if (link) {
         window.open(link, '_blank', 'noopener,noreferrer');
         return;
       }
 
-      // Comportamiento por defecto (Fresas): abrir pantalla de pedido
       pantallaInicio.style.display  = 'none';
       pantallaPedido.style.display  = 'flex';
       pantallaCombo.style.display   = 'none';
@@ -475,10 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
     pantallaResumen.style.display = 'none';
     pantallaPedido.style.display = 'none';
     pantallaCombo.style.display = 'none';
-    pantallaCalcetines.style.display = 'none'; // Ocultar también calcetines
     pantallaInicio.style.display = 'flex';
 
-    // 🎲 Re-mezclar productos al volver al inicio
     const paneles = mezclarProductos();
     paneles.forEach((p, i) => {
       p.style.opacity = 0;
@@ -498,7 +477,6 @@ function volverAlInicio() {
   document.getElementById('pantalla-pedido').style.display = 'none';
   document.getElementById('pantalla-combo').style.display = 'none';
   document.getElementById('pantalla-resumen').style.display = 'none';
-  document.getElementById('pantalla-calcetines').style.display = 'none'; // Ocultar calcetines
   document.getElementById('pantalla-inicio').style.display = 'flex';
 }
 
