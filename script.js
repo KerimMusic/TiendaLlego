@@ -8,39 +8,7 @@ let resumenIngredientesTexto = 'Ninguno';
 /* Números de WhatsApp (se elige uno al azar en cada pedido) */
 const NUMEROS_WHATSAPP = ['524621824592', '524626022906'];
 
-/* ============ Telegram ============ */
-const TELEGRAM_USUARIO = 'Soporte95'; // @Soporte95
-
 document.addEventListener('DOMContentLoaded', () => {
-
-  // ============================================================
-  // 🎲 ORDEN ALEATORIO DE LOS PRODUCTOS
-  // ============================================================
-  const galeria = document.getElementById('pantalla-inicio');
-
-  function mezclarProductos() {
-    if (!galeria) return [];
-    const paneles = Array.from(galeria.querySelectorAll('.panel.clickable'));
-    for (let i = paneles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [paneles[i], paneles[j]] = [paneles[j], paneles[i]];
-    }
-    paneles.forEach(p => galeria.appendChild(p));
-    return paneles;
-  }
-
-  const panelesOrdenados = mezclarProductos();
-
-  // ============ Animación de entrada ============
-  panelesOrdenados.forEach((panel, i) => {
-    panel.style.opacity = 0;
-    panel.style.transform = 'translateY(12px)';
-    setTimeout(() => {
-      panel.style.transition = 'opacity .6s ease, transform .6s ease';
-      panel.style.opacity = 1;
-      panel.style.transform = 'translateY(0)';
-    }, 100 * i);
-  });
 
   // ============ EFECTO TÁCTIL PROFESIONAL ============
   function crearRipple(e) {
@@ -74,70 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function activarFeedbackPaneles() {
-    document.querySelectorAll('.panel.clickable').forEach(panel => {
-      if (panel.dataset.feedbackActivo) return;
-      panel.dataset.feedbackActivo = 'true';
-
-      panel.addEventListener('pointerdown', () => panel.classList.add('is-pressed'));
-      ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
-        panel.addEventListener(evt, () => panel.classList.remove('is-pressed'));
-      });
-    });
-  }
-
   activarFeedbackBotones();
-  activarFeedbackPaneles();
 
   // ============ Referencias a pantallas ============
-  const pantallaInicio  = document.getElementById('pantalla-inicio');
   const pantallaPedido  = document.getElementById('pantalla-pedido');
   const pantallaCombo   = document.getElementById('pantalla-combo');
   const pantallaResumen = document.getElementById('pantalla-resumen');
-
-  // ============================================================
-  // BOTÓN "CONSULTAR SI HAY PRODUCTO"  →  Telegram (@Soporte95)
-  // Envía TODA la información del producto con mensaje predefinido
-  // ============================================================
-  document.querySelectorAll('.btn-overlay').forEach(btn => {
-    btn.addEventListener('click', (evento) => {
-      evento.preventDefault();
-      evento.stopPropagation();
-
-      const panel = btn.closest('.panel');
-      const nombre      = panel?.dataset.producto     || 'Producto';
-      const descripcion = panel?.dataset.descripcion  || '';
-      const precio      = panel?.dataset.precio       || '';
-      const promo       = panel?.dataset.promo        || '';
-      const link        = panel?.dataset.link         || '';
-
-      // Construir el mensaje con TODA la información
-      const lineas = [
-        '¡Hola! 🍓 Quisiera saber si todavía tienen producto disponible:',
-        '',
-        `📦 Producto: ${nombre}`
-      ];
-      if (descripcion) lineas.push(`🍓 Descripción: ${descripcion}`);
-      if (precio)      lineas.push(`💰 Precio: ${precio}`);
-      if (promo)       lineas.push(`🎁 Promoción: ${promo}`);
-      if (link)        lineas.push(`🔗 Link: ${link}`);
-      lineas.push('', '¿Aún hay disponibilidad? ¡Gracias! ✨');
-
-      const mensaje = lineas.join('\n');
-      const mensajeCodificado = encodeURIComponent(mensaje);
-
-      // ✅ URL de Telegram con mensaje predefinido
-      const urlTelegram = `https://t.me/${TELEGRAM_USUARIO}?text=${mensajeCodificado}`;
-
-      // Copiar al portapapeles como respaldo
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(mensaje).catch(() => {});
-      }
-
-      // Abrir Telegram con el mensaje ya escrito
-      window.open(urlTelegram, '_blank', 'noopener,noreferrer');
-    });
-  });
 
   // ============ Ingredientes simple ============
   const ingredientesSeleccionados = [];
@@ -155,29 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ingredientesSeleccionados.splice(index, 1);
         btn.textContent = 'Agregar';
       }
-    });
-  });
-
-  // ============================================================
-  // NAVEGACIÓN DE PANELES
-  // ============================================================
-  document.querySelectorAll('.panel.clickable').forEach(panel => {
-    panel.addEventListener('click', (evento) => {
-      evento.preventDefault();
-      evento.stopPropagation();
-
-      const link = (panel.dataset.link || '').trim();
-
-      if (link) {
-        window.open(link, '_blank', 'noopener,noreferrer');
-        return;
-      }
-
-      pantallaInicio.style.display  = 'none';
-      pantallaPedido.style.display  = 'flex';
-      pantallaCombo.style.display   = 'none';
-      pantallaResumen.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
 
@@ -470,32 +357,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('modal-confirmacion').style.display = 'none';
     reiniciarApp();
     pantallaResumen.style.display = 'none';
-    pantallaPedido.style.display = 'none';
     pantallaCombo.style.display = 'none';
-    pantallaInicio.style.display = 'flex';
-
-    const paneles = mezclarProductos();
-    paneles.forEach((p, i) => {
-      p.style.opacity = 0;
-      p.style.transform = 'translateY(12px)';
-      setTimeout(() => {
-        p.style.opacity = 1;
-        p.style.transform = 'translateY(0)';
-      }, 80 * i);
-    });
-
+    pantallaPedido.style.display = 'flex';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 });
 
 // ============ Navegación global ============
-function volverAlInicio() {
-  document.getElementById('pantalla-pedido').style.display = 'none';
-  document.getElementById('pantalla-combo').style.display = 'none';
-  document.getElementById('pantalla-resumen').style.display = 'none';
-  document.getElementById('pantalla-inicio').style.display = 'flex';
-}
-
 function volverAlPedido() {
   if (origenPedido === 'combo') {
     document.getElementById('pantalla-resumen').style.display = 'none';
