@@ -1,0 +1,529 @@
+/* ============ Reset básico ============ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #000;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============ Pantalla principal (Galería) ============ */
+.galeria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 30px 20px;
+  min-height: 100vh;
+  background-color: #000;
+}
+
+.panel {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.panel.clickable {
+  cursor: pointer;
+}
+
+.panel p {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+/* ============ Ilustración (imagen del panel) ============ */
+.ilustracion {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.ilustracion img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* ============ Botón superpuesto sobre la imagen ============ */
+.btn-overlay {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff2a2a;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  width: 85%;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.btn-overlay:hover {
+  background-color: #d90000;
+}
+
+.btn-overlay:active {
+  transform: translateX(-50%) scale(0.97);
+}
+
+/* ============ Pantalla de pedido y resumen ============ */
+#pantalla-pedido,
+#pantalla-resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ============ Botón volver ============ */
+.btn-volver {
+  align-self: flex-start;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #ff2a2a;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.btn-volver:hover {
+  background-color: #ff2a2a;
+}
+
+/* ============ Banner superior ============ */
+.banner-top {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.banner-top img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* ============ Títulos ============ */
+.titulo-principal,
+.titulo-resumen {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+}
+
+/* ============ Caja de promoción ============ */
+.promo-box {
+  background: #1a1a1a;
+  border-left: 4px solid #ff2a2a;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.promo-box h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #ff2a2a;
+}
+
+.promo-box p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #ddd;
+}
+
+/* ============ Lista de ingredientes ============ */
+.lista-ingredientes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1a1a1a;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.item-img-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.item-img-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-text {
+  flex: 1;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* ============ Botón agregar/quitar ============ */
+.btn-agregar {
+  background-color: #ff2a2a;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #d90000;
+}
+
+/* ============ Botón principal ============ */
+.btn-ver-pedido {
+  background-color: #ff2a2a;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.25s ease;
+}
+
+.btn-ver-pedido:hover {
+  background-color: #d90000;
+}
+
+/* ============ Input nombre / dirección ============ */
+.input-nombre,
+.input-direccion {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+}
+
+.input-nombre:focus,
+.input-direccion:focus {
+  outline: none;
+  border-color: #ff2a2a;
+}
+
+.input-direccion {
+  min-height: 70px;
+}
+
+.input-direccion:disabled {
+  background-color: #111;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* ============ Resumen ============ */
+.resumen-lineas {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.etiqueta-linea {
+  color: #ff2a2a;
+  font-weight: bold;
+}
+
+/* ============ Fila de opciones (Pago / Envío) ============ */
+.fila-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.etiqueta {
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.grupo-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-opcion {
+  flex: 1;
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 20px;
+  padding: 10px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 120px;
+}
+
+.btn-opcion.activo {
+  background-color: #ff2a2a;
+  border-color: #ff2a2a;
+  font-weight: bold;
+}
+
+.btn-opcion:hover {
+  border-color: #ff2a2a;
+}
+
+/* ============ Nota de envío ============ */
+.nota-envio {
+  font-size: 12px;
+  color: #aaa;
+  text-align: right;
+  margin-top: -6px;
+}
+
+/* ============ Mensaje de error ============ */
+.msg-error {
+  color: #ff5555;
+  font-size: 13px;
+  text-align: center;
+  min-height: 18px;
+}
+
+/* ============ Modal de confirmación ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-card {
+  background: #1a1a1a;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+}
+
+.modal-card h3 {
+  color: #ff2a2a;
+  font-size: 20px;
+}
+
+.modal-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ddd;
+  text-align: left;
+}
+
+/* ============ Pantalla del Combo ============ */
+#pantalla-combo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.subtitulo-combo {
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+  margin-top: -8px;
+}
+
+.combo-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 10px;
+}
+
+.combo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.combo-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.combo-numero {
+  font-size: 42px;
+  font-weight: bold;
+  color: #fff;
+  min-width: 40px;
+  text-align: center;
+}
+
+.combo-img {
+  width: 90px;
+  height: 112px;
+}
+
+.combo-img svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.btn-desplegable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #ff2a2a;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  font-family: inherit;
+}
+
+.btn-desplegable:hover {
+  background-color: #d90000;
+}
+
+.btn-desplegable .flecha {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.combo-item.abierto .btn-desplegable .flecha {
+  transform: rotate(180deg);
+}
+
+.combo-opciones {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 6px;
+}
+
+.combo-item.abierto .combo-opciones {
+  display: flex;
+}
+
+.opcion-ing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #ddd;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.opcion-ing:hover {
+  background: #2a2a2a;
+}
+
+.opcion-ing input[type="checkbox"] {
+  accent-color: #ff2a2a;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.btn-rosa {
+  background-color: #ff00cc;
+}
+
+.btn-rosa:hover {
+  background-color: #cc00a3;
+}
+
+/* ============ Responsive ============ */
+@media (min-width: 600px) {
+  .galeria {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .panel {
+    max-width: 300px;
+  }
+}
