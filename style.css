@@ -89,8 +89,6 @@ body {
   background-color: #d90000;
 }
 
-/* NOTA: el estado :active se maneja con las nuevas reglas al final del archivo */
-
 /* ============ Pantalla de pedido y resumen ============ */
 #pantalla-pedido,
 #pantalla-resumen {
@@ -586,7 +584,7 @@ button {
     border-color     .25s ease;
 }
 
-/* ---------- Estado presionado (rápido, como app nativa) ---------- */
+/* ---------- Estado presionado ---------- */
 button:active,
 button.is-pressed {
   transform: scale(var(--press-scale));
@@ -594,7 +592,6 @@ button.is-pressed {
   transition-duration: .07s;
 }
 
-/* El botón superpuesto necesita conservar su centrado horizontal */
 .btn-overlay:active,
 .btn-overlay.is-pressed {
   transform: translateX(-50%) scale(var(--press-scale));
@@ -627,7 +624,7 @@ button.rippling::after {
   100% { transform: scale(1);   opacity: 0;   }
 }
 
-/* ---------- Foco visible (accesibilidad, solo teclado) ---------- */
+/* ---------- Foco visible (accesibilidad) ---------- */
 button:focus { outline: none; }
 
 button:focus-visible {
@@ -676,7 +673,7 @@ button:disabled::after { display: none; }
   background: #2a2a2a;
 }
 
-/* ---------- Respeta "reducir movimiento" del sistema ---------- */
+/* ---------- Respeta "reducir movimiento" ---------- */
 @media (prefers-reduced-motion: reduce) {
   button,
   .panel.clickable .ilustracion,
@@ -684,4 +681,86 @@ button:disabled::after { display: none; }
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
   }
+}
+
+/* ============================================================
+   HEADER DE LA PÁGINA DE INICIO  (Koonol NAAT · PRODUCTO)
+   ============================================================ */
+.header-inicio {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: #000;
+  padding: 14px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.header-inicio > * { pointer-events: auto; }
+
+.logo-koonol {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Brush Script MT', 'Segoe Script', 'Lucida Handwriting',
+               'Comic Sans MS', cursive;
+  font-style: italic;
+  font-weight: 400;
+  color: #fff;
+  font-size: 30px;
+  line-height: 0.85;
+  letter-spacing: 0.5px;
+  padding-left: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.banner-producto {
+  background-color: #ff0000;
+  border-radius: 40px;
+  padding: 10px 20px 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25);
+}
+
+.banner-titulo {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.banner-subtitulo {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  margin-top: 4px;
+  opacity: 0.95;
+  text-transform: uppercase;
+}
+
+#pantalla-inicio.galeria {
+  padding-top: 150px;
+}
+
+@media (min-width: 600px) {
+  #pantalla-inicio.galeria { padding-top: 170px; }
+  .logo-koonol    { font-size: 34px; }
+  .banner-titulo  { font-size: 30px; }
+  .banner-subtitulo { font-size: 12px; }
+}
+
+@media (max-width: 360px) {
+  #pantalla-inicio.galeria { padding-top: 138px; }
+  .logo-koonol    { font-size: 26px; }
+  .banner-titulo  { font-size: 22px; }
+  .banner-producto { padding: 8px 16px 7px; }
 }
