@@ -87,7 +87,7 @@
 
   <div class="lista-ingredientes">
     <div class="item-row">
-      <div class="item-img-circle">
+      <div class="item-img-circle" data-info="Coco rallado 100% natural. Aporta un toque crujiente y un sabor dulce y tropical que combina perfecto con el chantilly.">
         <img src="https://www.dropbox.com/scl/fi/ujrovugrfibrdpkb6cegq/Rayaduradecoro.jpeg?rlkey=mddnqje2mzbxktm6ygk8g77wk&st=j2i6ih68&raw=1" alt="Ralladura de coco">
       </div>
       <span class="item-text">Ralladura de coco.</span>
@@ -95,7 +95,7 @@
     </div>
 
     <div class="item-row">
-      <div class="item-img-circle">
+      <div class="item-img-circle" data-info="Chispas de chocolate con leche. Se derriten suavemente sobre el chantilly para dar un extra cremoso y chocolatoso.">
         <img src="https://www.dropbox.com/scl/fi/tbacql42vf8fris7wvzwy/chocolate.jpeg?rlkey=5itjk17t0u85ibdtja4iona7s&st=rf8v3k5r&raw=1" alt="Chispas de chocolate">
       </div>
       <span class="item-text">Chispas Chocolate.</span>
@@ -103,7 +103,7 @@
     </div>
 
     <div class="item-row">
-      <div class="item-img-circle">
+      <div class="item-img-circle" data-info="Chispas de alegría (amaranto con miel). Textura crujiente y sabor tradicional mexicano que realza el sabor de la fresa.">
         <img src="https://www.dropbox.com/scl/fi/e5uo6uiih7vy3s88zg2l8/Alegria.jpeg?rlkey=q2dmn6wh9uobc1kpdp6vydzjs&st=0yynewjx&raw=1" alt="Chispas Alegría">
       </div>
       <span class="item-text">Chispas Alegría.</span>
@@ -111,7 +111,7 @@
     </div>
 
     <div class="item-row">
-      <div class="item-img-circle">
+      <div class="item-img-circle" data-info="Jarabe dulce de fresa. Realza el sabor natural de la fruta y le da un acabado brillante y jugoso.">
         <img src="https://www.dropbox.com/scl/fi/ge4uztr87t9974v8s5cda/JarabeDeFresa.jpeg?rlkey=psrnq4cdl7gd2ecv8fleb40pq&st=sc0zvkas&raw=1" alt="Jarabe de Fresa">
       </div>
       <span class="item-text">Jarabe de Fresa.</span>
@@ -236,6 +236,18 @@
 
   <button class="btn-ver-pedido" id="btn-hacer-pedido">HACER PEDIDO</button>
 </section>
+
+<!-- ============ Visor de ingrediente ============ -->
+<div class="visor-overlay" id="visor-ingrediente" style="display: none;">
+  <div class="visor-card">
+    <button class="visor-cerrar" id="visor-cerrar" type="button" aria-label="Cerrar">✕</button>
+    <div class="visor-img">
+      <img id="visor-imagen" src="" alt="">
+    </div>
+    <h3 class="visor-titulo" id="visor-titulo"></h3>
+    <p class="visor-info" id="visor-info"></p>
+  </div>
+</div>
 
 <!-- ============ Modal de confirmación ============ -->
 <div class="modal-overlay" id="modal-confirmacion" style="display: none;">
