@@ -44,6 +44,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
   activarFeedbackBotones();
 
+  // ============ Visor de ingredientes (lightbox) ============
+  const visor       = document.getElementById('visor-ingrediente');
+  const visorImg    = document.getElementById('visor-imagen');
+  const visorTitulo = document.getElementById('visor-titulo');
+  const visorInfo   = document.getElementById('visor-info');
+  const visorCerrar = document.getElementById('visor-cerrar');
+
+  function abrirVisor(circulo) {
+    const img = circulo.querySelector('img');
+    if (!img || !visor) return;
+
+    const item = circulo.closest('.item-row');
+    const nombre = item ? item.querySelector('.item-text').textContent.trim() : '';
+    const info = circulo.dataset.info || '';
+
+    visorImg.src = img.src;
+    visorImg.alt = img.alt || nombre;
+    visorTitulo.textContent = nombre;
+    visorInfo.textContent = info;
+
+    visor.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarVisor() {
+    if (!visor) return;
+    visor.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.item-img-circle').forEach(circulo => {
+    circulo.setAttribute('role', 'button');
+    circulo.setAttribute('tabindex', '0');
+    circulo.setAttribute('aria-label', 'Ver detalle del ingrediente');
+
+    circulo.addEventListener('click', () => abrirVisor(circulo));
+    circulo.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        abrirVisor(circulo);
+      }
+    });
+  });
+
+  if (visorCerrar) visorCerrar.addEventListener('click', cerrarVisor);
+
+  if (visor) {
+    visor.addEventListener('click', (e) => {
+      if (e.target === visor) cerrarVisor();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && visor && visor.style.display === 'flex') cerrarVisor();
+  });
+
   // ============ Referencias a pantallas ============
   const pantallaPedido  = document.getElementById('pantalla-pedido');
   const pantallaCombo   = document.getElementById('pantalla-combo');
